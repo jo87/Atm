@@ -4,6 +4,8 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,6 +17,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -28,10 +33,13 @@ public class TransActivity extends AppCompatActivity {
 
     private static final String TAG = "TransActivity";
     OkHttpClient client = new OkHttpClient();
+    private ListView list;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trans);
+        list = (ListView) findViewById(R.id.list);
         //http://atm201605.appspot.com/h
 //        new TransTask().execute("http://atm201605.appspot.com/h");
         //OkHttp
@@ -87,6 +95,7 @@ public class TransActivity extends AppCompatActivity {
 
     private void parseJSON(String s) {
         try {
+            ArrayList<Map<String, String>> data = new ArrayList();
             JSONArray array = new JSONArray(s);
             for (int i=0; i<array.length(); i++){
                 JSONObject obj = array.getJSONObject(i);
@@ -94,7 +103,25 @@ public class TransActivity extends AppCompatActivity {
                 int amount = obj.getInt("amount");
                 int type = obj.getInt("type");
                 Log.d(TAG, "OBJ:"+date+"/"+amount+"/"+type);
+                Map<String, String> row = new HashMap<>();
+                row.put("date", date);
+                row.put("amount", amount+"");
+                row.put("type", type+"");
+                data.add(row);
             }
+            int[] to = {R.id.tran_date, R.id.tran_amount, R.id.tran_type};
+            String[] from = {"date", "amount", "type"};
+            final SimpleAdapter adapter = new SimpleAdapter(this,
+                    data,
+                    R.layout.trans_row
+                    , from, to);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    list.setAdapter(adapter);
+                }
+            });
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
