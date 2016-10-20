@@ -1,6 +1,7 @@
 package com.tom.atm;
 
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,7 +19,13 @@ import java.net.URL;
 
 public class StockActivity extends AppCompatActivity {
     private static final String TAG = "StockActivity";
-
+    Handler handler = new Handler();
+    Runnable job = new Runnable() {
+        @Override
+        public void run() {
+            new StockTask().execute("2330", "3008", "2498", "1201", "1202");
+        }
+    };
     //http://finance.google.com/finance/info?client=ig&q=TPE:3008,2330,2498,1201
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +51,7 @@ public class StockActivity extends AppCompatActivity {
                 BufferedReader in = new BufferedReader(isr);
                 String line = in.readLine();
                 while (line != null) {
-                    Log.d(TAG, "line:" + line);
+//                    Log.d(TAG, "line:" + line);
                     sb.append(line);
                     line = in.readLine();
                 }
@@ -72,7 +79,14 @@ public class StockActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            handler.postDelayed(job, 5000);
 
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        handler.removeCallbacks(job);
     }
 }
