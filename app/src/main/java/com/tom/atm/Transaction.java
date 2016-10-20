@@ -5,6 +5,7 @@ package com.tom.atm;
  */
 
 public class Transaction {
+    String account;
     String date;
     int amount;
     int type;
@@ -16,6 +17,14 @@ public class Transaction {
         this.date = date;
         this.amount = amount;
         this.type = type;
+    }
+
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
     }
 
     public String getDate() {

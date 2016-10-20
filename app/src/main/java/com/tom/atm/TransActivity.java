@@ -7,6 +7,8 @@ import android.util.Log;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -62,9 +64,23 @@ public class TransActivity extends AppCompatActivity {
                 Log.d(TAG, "JSON:" + json);
 //                parseJSON2(json);
 //                parseJSON(json);
-                parseGson(json);
+//                parseGson(json);
+                parseJackson(json);
             }
         });
+    }
+
+    private void parseJackson(String json) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            ArrayList<Transaction> trans =
+                    objectMapper.readValue(json,
+                            new TypeReference<ArrayList<Transaction>>() {});
+            Log.d("Jackson", trans.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void parseGson(String json) {
