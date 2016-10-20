@@ -7,6 +7,9 @@ import android.util.Log;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,10 +60,18 @@ public class TransActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 String json = response.body().string();
                 Log.d(TAG, "JSON:" + json);
-                parseJSON2(json);
+//                parseJSON2(json);
 //                parseJSON(json);
+                parseGson(json);
             }
         });
+    }
+
+    private void parseGson(String json) {
+        Gson gson = new Gson();
+        ArrayList<Transaction> trans =
+                gson.fromJson(json, new TypeToken<ArrayList<Transaction>>(){}.getType());
+        Log.d("GSON", trans.toString());
     }
 
     class TransTask extends AsyncTask<String, Void, String> {
