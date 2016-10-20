@@ -56,13 +56,13 @@ public class TransActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String json = response.body().string();
-                Log.d(TAG, "JSON:"+json);
+                Log.d(TAG, "JSON:" + json);
                 parseJSON(json);
             }
         });
     }
 
-    class TransTask extends AsyncTask<String, Void, String>{
+    class TransTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... params) {
@@ -73,8 +73,8 @@ public class TransActivity extends AppCompatActivity {
                 InputStreamReader isr = new InputStreamReader(is);
                 BufferedReader in = new BufferedReader(isr);
                 String line = in.readLine();
-                while (line!=null){
-                    Log.d(TAG, "line:"+line);
+                while (line != null) {
+                    Log.d(TAG, "line:" + line);
                     sb.append(line);
                     line = in.readLine();
                 }
@@ -88,8 +88,27 @@ public class TransActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            Log.d(TAG, "JSON:"+s);
+            Log.d(TAG, "JSON:" + s);
             parseJSON(s);
+        }
+    }
+
+    private void parseJSON2(String s) {
+        try {
+            JSONArray array = new JSONArray(s);
+            ArrayList<Transaction> trans = new ArrayList<>();
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject obj = array.getJSONObject(i);
+                String date = obj.getString("date");
+                int amount = obj.getInt("amount");
+                int type = obj.getInt("type");
+                Log.d(TAG, "OBJ:" + date + "/" + amount + "/" + type);
+                Transaction t = new Transaction(date, amount, type);
+                trans.add(t);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -97,16 +116,16 @@ public class TransActivity extends AppCompatActivity {
         try {
             ArrayList<Map<String, String>> data = new ArrayList();
             JSONArray array = new JSONArray(s);
-            for (int i=0; i<array.length(); i++){
+            for (int i = 0; i < array.length(); i++) {
                 JSONObject obj = array.getJSONObject(i);
                 String date = obj.getString("date");
                 int amount = obj.getInt("amount");
                 int type = obj.getInt("type");
-                Log.d(TAG, "OBJ:"+date+"/"+amount+"/"+type);
+                Log.d(TAG, "OBJ:" + date + "/" + amount + "/" + type);
                 Map<String, String> row = new HashMap<>();
                 row.put("date", date);
-                row.put("amount", amount+"");
-                row.put("type", type+"");
+                row.put("amount", amount + "");
+                row.put("type", type + "");
                 data.add(row);
             }
             int[] to = {R.id.tran_date, R.id.tran_amount, R.id.tran_type};
