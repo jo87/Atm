@@ -80,7 +80,6 @@ public class TransActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     private void parseGson(String json) {
