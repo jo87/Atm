@@ -57,7 +57,8 @@ public class TransActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 String json = response.body().string();
                 Log.d(TAG, "JSON:" + json);
-                parseJSON(json);
+                parseJSON2(json);
+//                parseJSON(json);
             }
         });
     }
@@ -106,7 +107,8 @@ public class TransActivity extends AppCompatActivity {
                 Transaction t = new Transaction(date, amount, type);
                 trans.add(t);
             }
-
+            //debug
+                Log.d(TAG, trans.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }

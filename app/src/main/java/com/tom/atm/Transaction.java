@@ -41,4 +41,9 @@ public class Transaction {
     public void setType(int type) {
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return date+"/"+amount+"/"+type;
+    }
 }
