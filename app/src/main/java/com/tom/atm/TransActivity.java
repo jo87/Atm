@@ -3,6 +3,7 @@ package com.tom.atm;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -39,12 +40,15 @@ public class TransActivity extends AppCompatActivity {
     private static final String TAG = "TransActivity";
     OkHttpClient client = new OkHttpClient();
     private ListView list;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trans);
         list = (ListView) findViewById(R.id.list);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler);
+
         //http://atm201605.appspot.com/h
 //        new TransTask().execute("http://atm201605.appspot.com/h");
         //OkHttp
@@ -77,9 +81,13 @@ public class TransActivity extends AppCompatActivity {
                     objectMapper.readValue(json,
                             new TypeReference<ArrayList<Transaction>>() {});
             Log.d("Jackson", trans.toString());
+            TransactionAdapter adapter = new TransactionAdapter(trans);
+
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
 
     private void parseGson(String json) {

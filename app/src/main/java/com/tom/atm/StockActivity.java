@@ -80,7 +80,6 @@ public class StockActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             handler.postDelayed(job, 5000);
-
         }
     }
 
