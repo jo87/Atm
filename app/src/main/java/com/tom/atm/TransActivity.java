@@ -3,6 +3,7 @@ package com.tom.atm;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.ListView;
@@ -77,17 +78,28 @@ public class TransActivity extends AppCompatActivity {
     private void parseJackson(String json) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            ArrayList<Transaction> trans =
+            final ArrayList<Transaction> trans =
                     objectMapper.readValue(json,
                             new TypeReference<ArrayList<Transaction>>() {});
             Log.d("Jackson", trans.toString());
-            TransactionAdapter adapter = new TransactionAdapter(trans);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    setupRecylerView(trans);
+                }
+            });
 
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+    }
+
+    private void setupRecylerView(ArrayList<Transaction> trans) {
+        TransactionAdapter adapter = new TransactionAdapter(trans);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     private void parseGson(String json) {
