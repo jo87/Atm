@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tom.atm">
 
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -28,7 +29,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".AddActivity" />
         <activity android:name=".TransActivity" />
-        <activity android:name=".StockActivity"></activity>
+        <activity android:name=".StockActivity" />
+        <activity android:name=".ContactActivity"></activity>
     </application>
 
 </manifest>

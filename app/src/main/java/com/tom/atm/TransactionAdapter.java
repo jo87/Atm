@@ -13,24 +13,24 @@ import java.util.ArrayList;
  * Created by Administrator on 2016/10/24.
  */
 
-public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHolder>{
-
+public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHoler>{
     private final ArrayList<Transaction> trans;
 
-    public TransactionAdapter(ArrayList<Transaction> trans) {
+    public TransactionAdapter(ArrayList<Transaction> trans){
         this.trans = trans;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHoler onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-        View view = LayoutInflater.from(context).inflate(R.layout.trans_row, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        return viewHolder;
+        View view = LayoutInflater.from(context)
+                .inflate(R.layout.trans_row, parent, false);
+        ViewHoler viewHoler = new ViewHoler(view);
+        return viewHoler;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHoler holder, int position) {
         Transaction t = trans.get(position);
         holder.dateTextView.setText(t.getDate());
         holder.amountTextView.setText(t.getAmount()+"");
@@ -42,15 +42,17 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         return trans.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
-        private final TextView dateTextView;
-        private final TextView amountTextView;
-        private final TextView typeTextView;
-        public ViewHolder(View itemView) {
+    public static class ViewHoler extends RecyclerView.ViewHolder{
+        TextView dateTextView;
+        TextView amountTextView;
+        TextView typeTextView;
+
+        public ViewHoler(View itemView) {
             super(itemView);
             dateTextView = (TextView) itemView.findViewById(R.id.tran_date);
             amountTextView = (TextView) itemView.findViewById(R.id.tran_amount);
             typeTextView = (TextView) itemView.findViewById(R.id.tran_type);
         }
     }
+
 }
