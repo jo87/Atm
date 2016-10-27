@@ -49,15 +49,15 @@ public class ContactActivity extends AppCompatActivity {
     private void readContacts() {
         ContentResolver cr = getContentResolver();
         Cursor c = cr.query(Contacts.CONTENT_URI, null, null, null, null);
-        ListView list = (ListView) findViewById(R.id.list);
+        /*ListView list = (ListView) findViewById(R.id.list);
         SimpleCursorAdapter adapter = new SimpleCursorAdapter(
                 this, android.R.layout.simple_list_item_1,
                 c,
                 new String[]{Contacts.DISPLAY_NAME},
                 new int[]{android.R.id.text1}, 0);
-        list.setAdapter(adapter);
+        list.setAdapter(adapter);*/
 
-        /*while(c.moveToNext()){
+        while(c.moveToNext()){
             String name = c.getString(
                     c.getColumnIndex(Contacts.DISPLAY_NAME));
             int id = c.getInt(
@@ -68,12 +68,14 @@ public class ContactActivity extends AppCompatActivity {
             if (hasPhone==1){
                 Cursor c2 = getContentResolver().query(Phone.CONTENT_URI,
                         null,
-                        Phone.CONTACT_ID+"=?",
-                        new String[]{String.valueOf(id)},
+                        Phone.CONTACT_ID+" = ? ",
+                        new String[]{id+""},
                         null);
-                String number = c2.getString(c2.getColumnIndex(Phone.NUMBER));
-                Log.d("NN", "     "+number);
+                while(c2.moveToNext()) {
+                    String number = c2.getString(c2.getColumnIndex(Phone.NUMBER));
+                    Log.d("NN", "     " + number);
+                }
             }
-        }*/
+        }
     }
 }
