@@ -9,6 +9,7 @@ import android.provider.MediaStore.Images.Thumbnails;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -77,18 +78,17 @@ public class PictureActivity extends AppCompatActivity implements LoaderManager.
             String data = c2.getString(c2.getColumnIndex(Thumbnails.DATA));
             Log.d("CC", id+","+imageId+","+data);
         }
-
     }
-
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
+        return new CursorLoader(this, Media.EXTERNAL_CONTENT_URI,
+                null, null, null, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
+        adapter.swapCursor(data);
     }
 
     @Override
