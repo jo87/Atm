@@ -20,6 +20,7 @@ public class PictureActivity extends AppCompatActivity {
 
     private static final int REQUEST_STORAGE = 110;
     private GridView grid;
+    private SimpleCursorAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +42,10 @@ public class PictureActivity extends AppCompatActivity {
                 null, null, null, null);
         String[] from = {Thumbnails.DATA, Thumbnails.IMAGE_ID};
         int[] to = {R.id.thumb_image, R.id.thumb_text};
-        SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
+        adapter = new SimpleCursorAdapter(this,
                 R.layout.thumb_item, c, from , to, 0);
         grid.setAdapter(adapter);
+
     }
 
     @Override
