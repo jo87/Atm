@@ -8,6 +8,8 @@ import android.provider.MediaStore.Images.Media;
 import android.provider.MediaStore.Images.Thumbnails;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,7 +18,7 @@ import android.widget.SimpleCursorAdapter;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
-public class PictureActivity extends AppCompatActivity {
+public class PictureActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int REQUEST_STORAGE = 110;
     private GridView grid;
@@ -38,14 +40,14 @@ public class PictureActivity extends AppCompatActivity {
     }
 
     private void readThumbnails() {
-        Cursor c = getContentResolver().query(Thumbnails.EXTERNAL_CONTENT_URI,
-                null, null, null, null);
-        String[] from = {Thumbnails.DATA, Thumbnails.IMAGE_ID};
+//        Cursor c = getContentResolver().query(Thumbnails.EXTERNAL_CONTENT_URI,
+//                null, null, null, null);
+        String[] from = {Thumbnails.DATA, Media.DISPLAY_NAME};
         int[] to = {R.id.thumb_image, R.id.thumb_text};
         adapter = new SimpleCursorAdapter(this,
-                R.layout.thumb_item, c, from , to, 0);
+                R.layout.thumb_item, null, from , to, 0);
         grid.setAdapter(adapter);
-
+        getSupportLoaderManager().initLoader(0, null, this);
     }
 
     @Override
@@ -75,6 +77,22 @@ public class PictureActivity extends AppCompatActivity {
             String data = c2.getString(c2.getColumnIndex(Thumbnails.DATA));
             Log.d("CC", id+","+imageId+","+data);
         }
+
+    }
+
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return null;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
 
     }
 }
