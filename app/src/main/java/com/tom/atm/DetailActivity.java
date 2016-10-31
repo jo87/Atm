@@ -73,6 +73,18 @@ public class DetailActivity extends AppCompatActivity implements GestureDetector
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
         Log.d("GEST", "onFling");
+        float distance = e2.getX()-e1.getX();
+        if (distance > 100){ // to the right
+            if (!cursor.moveToPrevious()){
+                cursor.moveToLast();
+            }
+            updateImage();
+        }else if (distance<-100){ // to the left
+            if (!cursor.moveToNext()){
+                cursor.moveToFirst();
+            }
+            updateImage();
+        }
         return false;
     }
 }
