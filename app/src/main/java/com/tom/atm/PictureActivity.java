@@ -1,6 +1,7 @@
 package com.tom.atm;
 
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.provider.MediaStore;
@@ -14,12 +15,14 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.SimpleCursorAdapter;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 
-public class PictureActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class PictureActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>, AdapterView.OnItemClickListener {
 
     private static final int REQUEST_STORAGE = 110;
     private GridView grid;
@@ -48,6 +51,7 @@ public class PictureActivity extends AppCompatActivity implements LoaderManager.
         adapter = new SimpleCursorAdapter(this,
                 R.layout.thumb_item, null, from , to, 0);
         grid.setAdapter(adapter);
+        grid.setOnItemClickListener(this);
         getSupportLoaderManager().initLoader(0, null, this);
     }
 
@@ -94,5 +98,12 @@ public class PictureActivity extends AppCompatActivity implements LoaderManager.
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent(this, DetailActivity.class);
+        intent.putExtra("POSITION", position);
+        startActivity(intent);
     }
 }
