@@ -15,7 +15,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener {
 
     private static final int REQUEST_LOCATION = 100;
     private GoogleMap mMap;
@@ -61,7 +61,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
             return;
         }else {
-            mMap.setMyLocationEnabled(true);
+            setupMyLocation();
         }
     }
 
@@ -70,8 +70,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                            @NonNull int[] grantResults) {
         if (requestCode==REQUEST_LOCATION &&
                 grantResults[0] == PackageManager.PERMISSION_GRANTED ){
-            //noinspection MissingPermission
-            mMap.setMyLocationEnabled(true);
+
+            setupMyLocation();
         }
+    }
+
+    private void setupMyLocation() {
+        //noinspection MissingPermission
+        mMap.setMyLocationEnabled(true);
+        mMap.setOnMyLocationButtonClickListener(this);
+    }
+
+    @Override
+    public boolean onMyLocationButtonClick() {
+        
+        return false;
     }
 }
