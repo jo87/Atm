@@ -2,11 +2,15 @@ package com.tom.atm;
 
 import android.*;
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,6 +22,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener {
 
     private static final int REQUEST_LOCATION = 100;
+    private static final String TAG = "MapsActivity";
     private GoogleMap mMap;
 
     @Override
@@ -47,8 +52,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //        LatLng sydney = new LatLng(-34, 151);
         //        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         //        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-        LatLng taipei101 = new LatLng(25.0339031, 121.5623212);
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(taipei101, 17));
+//        LatLng taipei101 = new LatLng(25.0339031, 121.5623212);
+//        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(taipei101, 17));
+
         googleMap.getUiSettings().setZoomControlsEnabled(true);
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -79,11 +85,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //noinspection MissingPermission
         mMap.setMyLocationEnabled(true);
         mMap.setOnMyLocationButtonClickListener(this);
+        //gps
+        LocationManager locationManager =
+                (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        //noinspection MissingPermission
+        Location location = locationManager.getLastKnownLocation("gps");
+        Log.d(TAG, "Location:"+location);
+        if (location!=null){
+
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(location.getLatitude(), location.getLongitude()), 17
+            ));
+        }
     }
 
     @Override
     public boolean onMyLocationButtonClick() {
-        
+
         return false;
     }
 }
