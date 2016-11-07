@@ -7,11 +7,15 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -19,11 +23,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final int REQUEST_LOCATION = 100;
     private static final String TAG = "MapsActivity";
     private GoogleMap mMap;
+    GoogleApiClient googleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +38,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        //
+        if (googleApiClient == null){
+            googleApiClient = new GoogleApiClient.Builder(this)
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .build();
+        }
     }
 
+    @Override
+    protected void onStart() {
+        googleApiClient.connect();;
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        googleApiClient.disconnect();
+        super.onStop();
+    }
 
     /**
      * Manipulates the map once available.
@@ -89,10 +113,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LocationManager locationManager =
                 (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         //noinspection MissingPermission
-        Location location = locationManager.getLastKnownLocation("gps");
+        /*Location location = locationManager.getLastKnownLocation("gps");
         Log.d(TAG, "Location:"+location);
         if (location!=null){
 
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(location.getLatitude(), location.getLongitude()), 17
+            ));
+        }*/
+    }
+
+    @Override
+    public boolean onMyLocationButtonClick() {
+
+        return false;
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        //noinspection MissingPermission
+        Location location =
+            LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+        if (location != null) {
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
                     new LatLng(location.getLatitude(), location.getLongitude()), 17
             ));
@@ -100,8 +142,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
-    public boolean onMyLocationButtonClick() {
+    public void onConnectionSuspended(int i) {
 
-        return false;
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 }
