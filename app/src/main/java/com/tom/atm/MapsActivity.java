@@ -15,6 +15,8 @@ import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,12 +25,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     private static final int REQUEST_LOCATION = 100;
     private static final String TAG = "MapsActivity";
     private GoogleMap mMap;
     GoogleApiClient googleApiClient;
+    private LocationRequest locationRequest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .addApi(LocationServices.API)
                     .build();
         }
+        locationRequest = new LocationRequest();
+        locationRequest.setInterval(5000);
+        locationRequest.setFastestInterval(1000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
     }
 
     @Override
@@ -139,6 +146,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     new LatLng(location.getLatitude(), location.getLongitude()), 17
             ));
         }
+        //
+        //noinspection MissingPermission
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                googleApiClient,
+                locationRequest,
+                this
+        );
     }
 
     @Override
@@ -149,5 +163,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        if (location != null) {
+            Log.d(TAG, location.getLatitude() + "/" + location.getLongitude());
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(location.getLatitude(), location.getLongitude()), 17
+            ));
+        }
     }
 }
